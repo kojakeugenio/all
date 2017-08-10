@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Table test</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
+
+    <link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
+   
+<style>
+    .fbClass {
+        width: 46px;
+        height: 44px;
+        background: url("https://www.datatables.net/media/images/nav-dt.png");
+    }
+
+    .selectedActive {
+        background-color: green !important; 
+        color: white;
+    }
+    
+</style>
+    
+</head>
+
+<body>
+    <!--<input type="text" id="mytext" value="test">-->
+    <div id="selectedValue" style="display: none;">ttt</div>
+<button onclick="ubot.runScript('loadCampaignButton()')">Load campaign</button> | <button onclick="ubot.runScript('saveCampaignButton()')">Save campaign</button> | <button onclick="ubot.runScript('clearCampaignFolder()')">clear</button> <br>
+      <!-- <button id="button">Delete selected row</button><button id="addRow">Add new row</button>   -->
+<button onclick="ubot.runScript('modalAddSample()')">Add new row</button>  
+
+      <hr>
+    <div id="example_wrapper" class="dataTables_wrapper">
+        <table id="example" class="display" cellspacing="0" width="100%">
+            <thead>
+                  <!-- <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+               
+                 </tr>   -->
+                  {{topHeader}}
+            </thead>
+
+        
+            <tbody>
+                  <!-- <tr class="selectedActive">
+                    <td>Tiger Nixon</td>
+                    <td>System Architect</td>
+                    <td>Edinburgh</td>
+                    <td>61</td>
+                    <td>2011/04/25</td>
+					<td><span class="contextMenu">xx</span></td>
+				</tr>
+           <tr id="currentRow">
+                    <td>Tiger Nixon</td>
+                    <td>System Architect</td>
+                    <td>Edinburgh</td>
+                    <td>61</td>
+                    <td>2011/04/25</td>
+					<td><span class="contextMenu">xx</span></td>
+				</tr>
+        
+          <tr>
+                    <td>Tiger Nixon</td>
+                    <td>System Architect</td>
+                    <td>Edinburgh</td>
+                    <td>61</td>
+                    <td>2011/04/25</td>
+					<td><span class="contextMenu" style="display: block;">xx</span></td>
+				</tr>   -->
+        
+         {{contentValue}}
+          
+
+            </tbody>
+        </table>
+    </div>
+
+<!-- Drop down menu-->
+<div style="display: none"> 
+<div class="dropdown" id="test">
+    <button class="btn btn-primary btn-sm" type="button" data-toggle="dropdown">options
+    <span class="caret"></span></button>
+    
+    <ul class="dropdown-menu">
+<!--	<li class="dropdown-header">Dropdown header 1</li>-->
+    <li><a href="#" onclick="ubot.runScript('contextMenuRun()')">Run</a></li>
+    <li><a href="#" onclick="ubot.runScript('contextMenuStop()')">Stop</a></li>
+    <li class="divider"></li>
+    <li><a href="#" onclick="ubot.runScript('contextMenuEdit()')">Edit</a></li>
+    <li><a href="#" onclick="ubot.runScript('contextMenuDelete()')">Delete</a></li>
+
+
+
+    </ul>
+</div>
+</div>
+
+
+<!--sortable script-->
+ <script>$( "table tbody" ).sortable( {
+	update: function( event, ui ) {
+    $(this).children().each(function(index) {
+			$(this).find('td').first().html(index + 1)
+    });
+  }
+});</script>
+
+<!--for context menu button-->
+<script>
+var contextID = document.getElementById("test");
+var x =document.getElementsByClassName("contextMenu");
+	for(var i = 0; i < x.length; i++){
+    x[i].innerHTML=contextID.outerHTML;    // Change the content
+    }
+	
+</script>
+
+
+<!--for datatables-->
+<script>
+	$(document).ready(function () {
+		var table = $('#example').DataTable({
+			"ordering": false,
+			"paging": false,
+			"searching": true
+		});
+
+		$('#example tbody').on('click', 'tr', function () {
+			var data = table.row(this).data();
+			//        alert( 'You clicked on '+data[0]+'\'s row' );
+			document.getElementById("selectedValue").innerHTML = data[1];
+
+
+			if ($(this).hasClass('selected')) {
+				$(this).removeClass('selected');
+			} else {
+				table.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+                
+			}
+		});
+
+		$('#button').click(function () {
+			table.row('.selected').remove().draw(false);
+            alert("test");
+		});
+
+	});
+</script>
+
+<!--Add content-->
+<script>
+	$(document).ready(function () {
+		var t = $('#example').DataTable();
+		var counter = 1;
+
+		//	Row value
+		  var col1 = "<strong>test</strong>" + '.ssd';
+		var col2 = counter + '.2';
+		var col3 = counter + '.3';
+		var col4 = counter + '.4';
+		var col5 = counter + '.5';
+		var col6 = counter + '.6';
+
+
+
+
+		$('#addRow').on('click', function () {
+
+
+			t.row.add([
+
+				col1,
+				col1,
+				col3,
+				col4,
+				col5,
+				col6,
+			]).draw(false);
+
+
+			counter++;
+			
+		});
+
+		// Automatically add a first row of data
+		//    $('#addRow').click();
+	});
+</script>
+
+  
+</body>
+
+</html>
